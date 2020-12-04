@@ -13,6 +13,10 @@ plugins {
 	id 'java'
 }
 
+group = 'com.hasi'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
