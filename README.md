@@ -81,6 +81,8 @@
 <td>
 <p><a href="https://i.kakao.com/docs/getting-started-overview#%EC%98%A4%ED%94%88%EB%B9%8C%EB%8D%94-%EC%86%8C%EA%B0%9C">https://i.kakao.com/docs/getting-started-overview#오픈빌더-소개</a></p></td></tr></tbody></table>
 <p />
-<p>화면 UI</p><ac:image ac:align="center" ac:layout="center" ac:original-height="720" ac:original-width="1280" ac:alt="목업" ac:width="680"><ri:attachment ri:filename="슬라이드1.JPG" ri:version-at-save="1" /></ac:image>
-<p>FLOW 차트</p><ac:image ac:align="center" ac:layout="center" ac:original-height="720" ac:original-width="1280" ac:alt="flow"><ri:attachment ri:filename="슬라이드2.JPG" ri:version-at-save="1" /></ac:image>
+<p>화면 UI</p>
+<img src="doc/diagram.JPG">
+<p>FLOW 차트</p>
+<img src="doc/flow.JPG">
 <p />
