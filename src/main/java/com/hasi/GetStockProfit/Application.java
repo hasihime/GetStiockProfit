@@ -23,7 +23,7 @@ public class Application {
 	}
 
 	private ApiInfo metadata() {
-		return new ApiInfoBuilder().title("GetStock").description("¹Ì±¹ ±â¾÷ÄÚµå¸¦ ¹Ş¾Æ 180ÀÏ ³»¿¡ ÃÖ´ë ¼öÀÍ °è»ê").version("1.0").build();
+		return new ApiInfoBuilder().title("GetStockProfit").description("ì£¼ì‹ì½”ë“œë¥¼ ë°›ì•„ ê¸°ê°„ë‚´ ìµœëŒ€ ìˆ˜ìµ ê³„ì‚°").version("1.0").build();
 	}
 
 	public static void main(String[] args) {
