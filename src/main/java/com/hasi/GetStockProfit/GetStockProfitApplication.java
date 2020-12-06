@@ -15,7 +15,7 @@ import springfox.documentation.service.ApiInfo;
 
 @SpringBootApplication
 @EnableSwagger2
-public class Application {
+public class GetStockProfitApplication {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any())
@@ -27,7 +27,7 @@ public class Application {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(GetStockProfitApplication.class, args);
 	}
 
 }
