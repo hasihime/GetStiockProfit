@@ -36,7 +36,6 @@ public class InterStockProfitService {
 
     public InterStockResponse GetmaxProfit(String ticker) throws JsonProcessingException {
         log.info("ticker: {}", ticker);
-        List<String> list = new LinkedList<String>();
         //Ticker를 통한 API 호출
         ResponseEntity<InterStockResponse> entity = GetInterStockInfoEntity(ticker);
         InterStockResponse arr = entity.getBody();

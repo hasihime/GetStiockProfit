@@ -3,11 +3,11 @@ package com.hasi.GetStockProfit.Application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,16 +19,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
-@AutoConfigureMockRestServiceServer
-@SpringBootTest
+
+@RestClientTest(value = InterStockProfitService.class)
 class InterStockProfitServiceTest {
-
-
     @Autowired
     private InterStockProfitService interStockProfitService;
     @Autowired
@@ -36,15 +33,16 @@ class InterStockProfitServiceTest {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
     private MockRestServiceServer mockRestServiceServer;
 
     @Test
     @DisplayName("올바른 ticker가 들어온 경우 정보를 가져옴")
     public void GetStockInfo_WhengivenCorrectTicker() throws JsonProcessingException {
-        mockRestServiceServer = MockRestServiceServer.createServer(restTemplate);
 
         String ticker = "CorrectTicker";
-        InterStockResponse stockResponse = new InterStockResponse(ticker, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        InterStockResponse expected = new InterStockResponse(ticker, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
         Date date = new Date();
         Calendar before180 = Calendar.getInstance();
         before180.add(Calendar.DATE, -180);
@@ -54,19 +52,20 @@ class InterStockProfitServiceTest {
         String token = "de6162a413844946ee8c3535879d862ad97187fe";
         String url = String.format("https://api.tiingo.com/tiingo/daily/" + ticker + "/prices?startDate=%s&endDate=%s&token=%s",
                 startdate, enddate, token);
+
         mockRestServiceServer.expect(requestTo(url))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(objectMapper.writeValueAsString(stockResponse)));
+                        .body(objectMapper.writeValueAsString(expected)));
 
         //when
-        ResponseEntity<InterStockResponse> responseEntity = interStockProfitService.GetInterStockInfoEntity(ticker);
+        ResponseEntity<InterStockResponse> actual = interStockProfitService.GetInterStockInfoEntity(ticker);
 
         //then
         mockRestServiceServer.verify();
-        Assertions.assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
-        Assertions.assertEquals(stockResponse, responseEntity.getBody());
+        Assertions.assertTrue(actual.getStatusCode().is2xxSuccessful());
+        Assertions.assertEquals(expected, actual.getBody());
     }
 
 }
