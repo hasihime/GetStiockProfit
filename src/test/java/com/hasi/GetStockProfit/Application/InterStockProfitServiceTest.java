@@ -36,9 +36,10 @@ class InterStockProfitServiceTest {
     @Autowired
     private MockRestServiceServer mockRestServiceServer;
 
+
     @Test
     @DisplayName("올바른 ticker가 들어온 경우 정보를 가져옴")
-    public void GetStockInfo_WhengivenCorrectTicker() throws JsonProcessingException {
+    public void GetStockInfo_When_givenCorrectTicker() throws JsonProcessingException {
 
         String ticker = "CorrectTicker";
         InterStockResponse expected = new InterStockResponse(ticker, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -50,8 +51,8 @@ class InterStockProfitServiceTest {
         String enddate = format.format(date);
         String startdate = format.format(before180.getTime());
         String token = "de6162a413844946ee8c3535879d862ad97187fe";
-        String url = String.format("https://api.tiingo.com/tiingo/daily/" + ticker + "/prices?startDate=%s&endDate=%s&token=%s",
-                startdate, enddate, token);
+        String url = String.format("https://api.tiingo.com/tiingo/daily/%s/prices?startDate=%s&endDate=%s&token=%s",
+                ticker,startdate, enddate, token);
 
         mockRestServiceServer.expect(requestTo(url))
                 .andExpect(method(HttpMethod.GET))
