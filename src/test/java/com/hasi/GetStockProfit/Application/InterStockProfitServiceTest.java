@@ -69,4 +69,34 @@ class InterStockProfitServiceTest {
         Assertions.assertEquals(expected, actual.getBody());
     }
 
+    @Test
+    @DisplayName("잘못된 ticker가 들어온 경우 잘못왔다고 리턴함")
+    public void GetStockInfo_When_givenWrongicker() throws JsonProcessingException {
+
+        String ticker = "WrongTicker";
+        InterStockResponse expected = null;
+
+        Date date = new Date();
+        Calendar before180 = Calendar.getInstance();
+        before180.add(Calendar.DATE, -180);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String enddate = format.format(date);
+        String startdate = format.format(before180.getTime());
+        String token = "de6162a413844946ee8c3535879d862ad97187fe";
+        String url = String.format("https://api.tiingo.com/tiingo/daily/%s/prices?startDate=%s&endDate=%s&token=%s",
+                ticker,startdate, enddate, token);
+
+        mockRestServiceServer.expect(requestTo(url))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.NOT_FOUND)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(objectMapper.writeValueAsString(expected)));
+
+        //when
+        ResponseEntity<InterStockResponse> actual = interStockProfitService.GetInterStockInfoEntity(ticker);
+
+        //then
+        mockRestServiceServer.verify();
+        Assertions.assertEquals(expected, actual.getBody());
+    }
 }
