@@ -37,14 +37,14 @@ public class InterStockProfitService {
     public InterStockResponse GetmaxProfit(String ticker) throws JsonProcessingException {
         log.info("ticker: {}", ticker);
         //Ticker를 통한 API 호출
-        ResponseEntity<InterStockResponse> entity = GetInterStockInfoEntity(ticker);
-        InterStockResponse arr = entity.getBody();
+        ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
+        InterStockResponse[] arr = entity.getBody();
         //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
 
-        return arr;
+        return arr[0];
     }
 
-    public ResponseEntity<InterStockResponse> GetInterStockInfoEntity(String curTicker) {
+    public ResponseEntity<InterStockResponse[]> GetInterStockInfoEntity(String curTicker) {
         Date date = new Date();
         Calendar before180 = Calendar.getInstance();
         before180.add(Calendar.DATE, -180);
@@ -55,7 +55,7 @@ public class InterStockProfitService {
         String url = String.format("https://api.tiingo.com/tiingo/daily/%s/prices?startDate=%s&endDate=%s&token=%s",
                 curTicker, startdate, enddate, token);
         try {
-            return restTemplate.exchange(url, HttpMethod.GET, httpEntity, InterStockResponse.class, curTicker);
+            return restTemplate.exchange(url, HttpMethod.GET, httpEntity, InterStockResponse[].class, curTicker);
         } catch (HttpStatusCodeException exception) {
             log.info("No result about {}", curTicker);
             return ResponseEntity.status(exception.getStatusCode()).body(null);
