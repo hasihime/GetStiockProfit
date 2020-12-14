@@ -34,14 +34,14 @@ public class InterStockProfitService {
         this.httpEntity = new HttpEntity<>(headers);
     }
 
-    public InterStockResponse GetmaxProfit(String ticker) throws JsonProcessingException {
+    public InterStockResponse[] GetmaxProfit(String ticker) throws JsonProcessingException {
         log.info("ticker: {}", ticker);
         //Ticker를 통한 API 호출
         ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
         InterStockResponse[] arr = entity.getBody();
         //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
 
-        return arr[0];
+        return arr;
     }
 
     public ResponseEntity<InterStockResponse[]> GetInterStockInfoEntity(String curTicker) {
