@@ -42,7 +42,7 @@ class InterStockProfitServiceTest {
     public void GetStockInfo_When_givenCorrectTicker() throws JsonProcessingException {
 
         String ticker = "CorrectTicker";
-        InterStockResponse expected = new InterStockResponse(ticker, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        InterStockResponse[] expected ={new InterStockResponse(ticker, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)};
 
         Date date = new Date();
         Calendar before180 = Calendar.getInstance();
@@ -61,12 +61,12 @@ class InterStockProfitServiceTest {
                         .body(objectMapper.writeValueAsString(expected)));
 
         //when
-        ResponseEntity<InterStockResponse> actual = interStockProfitService.GetInterStockInfoEntity(ticker);
+        ResponseEntity<InterStockResponse[]> actual = interStockProfitService.GetInterStockInfoEntity(ticker);
 
         //then
         mockRestServiceServer.verify();
         Assertions.assertTrue(actual.getStatusCode().is2xxSuccessful());
-        Assertions.assertEquals(expected, actual.getBody());
+        Assertions.assertArrayEquals(expected, actual.getBody());
     }
 
     @Test
@@ -74,7 +74,7 @@ class InterStockProfitServiceTest {
     public void GetStockInfo_When_givenWrongicker() throws JsonProcessingException {
 
         String ticker = "WrongTicker";
-        InterStockResponse expected = null;
+        InterStockResponse[] expected = null;
 
         Date date = new Date();
         Calendar before180 = Calendar.getInstance();
@@ -93,7 +93,7 @@ class InterStockProfitServiceTest {
                         .body(objectMapper.writeValueAsString(expected)));
 
         //when
-        ResponseEntity<InterStockResponse> actual = interStockProfitService.GetInterStockInfoEntity(ticker);
+        ResponseEntity<InterStockResponse[]> actual = interStockProfitService.GetInterStockInfoEntity(ticker);
 
         //then
         mockRestServiceServer.verify();
