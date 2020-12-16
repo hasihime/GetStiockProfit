@@ -4,13 +4,14 @@ FROM openjdk:8-jdk-alpine as builder
 COPY gradle gradle
 COPY gradlew .
 COPY settings.gradle .
+COPY build.gradle .
 RUN chmod +x ./gradlew
 #download gradle
 RUN ./gradlew --no-daemon
 
 #resolve dependencies
-COPY build.gradle .
-RUN ./gradlew resolveDependencies --no-daemon
+#COPY build.gradle .
+#RUN ./gradlew resolveDependencies --no-daemon
 
 #build jar file
 COPY src src
