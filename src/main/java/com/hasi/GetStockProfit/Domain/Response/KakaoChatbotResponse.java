@@ -6,8 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
-import org.apache.catalina.User;
+
+import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -19,12 +20,13 @@ public class KakaoChatbotResponse {
     Intent intent;
     @JsonProperty(value = "userRequest")
     UserRequest userRequest;
-
     @JsonProperty(value = "action")
     Action action;
+    @JsonProperty(value = "bot")
+    Bot bot;
 
-    public String getTciker(){
-        return action.params.ticker;
+    public Map<String, String> getTciker() {
+        return action.params;
     }
 
     @Data
@@ -32,12 +34,11 @@ public class KakaoChatbotResponse {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    class Intent{
+    class Intent {
         @JsonProperty(value = "id")
         String id;
         @JsonProperty(value = "name")
         String name;
-
     }
 
     @Data
@@ -45,33 +46,82 @@ public class KakaoChatbotResponse {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    class UserRequest{
-        @JsonProperty(value="timezone")
+    class UserRequest {
+        @JsonProperty(value = "timezone")
         String timezone;
-        @JsonProperty(value="params")
+        @JsonProperty(value = "params")
         Params params;
+        @JsonProperty(value = "block")
+        Block block;
+        @JsonProperty(value = "utterance")
+        String utterance;
+        @JsonProperty(value = "lang")
+        String lang;
+        @JsonProperty(value = "user")
+        User user;
 
-        class Params{
+        class Params {
+            @JsonProperty(value = "surface")
+            String surface;
             @JsonProperty(value = "ignoreMe")
             String ignoreMe;
         }
-}
+
+        class Block {
+            @JsonProperty(value = "id")
+            String id;
+            @JsonProperty(value = "name")
+            String name;
+        }
+
+        class User {
+            @JsonProperty(value = "id")
+            String id;
+            @JsonProperty(value = "type")
+            String type;
+            @JsonProperty(value = "properties")
+            List<Properties> properties;
+
+            class Properties {
+                @JsonProperty(value = "plusfriendUserKey")
+                String plusfriendUserKey;
+                @JsonProperty(value = "appUserId")
+                String appUserId;
+                @JsonProperty(value = "isFriend")
+                boolean isFriend;
+            }
+        }
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    class Action{
+    class Bot {
+        @JsonProperty(value = "id")
+        String id;
+        @JsonProperty(value = "name")
+        String name;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    class Action {
         @JsonProperty(value = "name")
         String name;
         @JsonProperty(value = "clientExtra")
-        String clientExtra;
+        Map<String, String> clientExtra;
         @JsonProperty(value = "params")
-        Params params;
-        class Params{
-            @JsonProperty(value = "ticker")
-            String ticker;
-        }
+        Map<String, String> params;
+        @JsonProperty(value = "id")
+        String id;
+        @JsonProperty(value = "detailParams")
+        Map<String, String> detailParams;
+
     }
 
     @Override

@@ -38,7 +38,7 @@ public class InterStockProfitService {
     public InterStockResponse[] GetmaxProfit(KakaoChatbotResponse kakaoChatbotResponse) throws JsonProcessingException {
         log.info("ticker: {}", kakaoChatbotResponse.getAction());
         //Ticker를 통한 API 호출
-        String ticker=kakaoChatbotResponse.getTciker();
+        String ticker=kakaoChatbotResponse.getTciker().get("ticker");
         ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
         InterStockResponse[] arr = entity.getBody();
         //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
