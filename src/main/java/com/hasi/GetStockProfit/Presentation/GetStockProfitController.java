@@ -6,9 +6,7 @@ import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
 import com.hasi.GetStockProfit.Domain.Response.KakaoChatbotResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class GetStockProfitController {
@@ -23,8 +21,9 @@ public class GetStockProfitController {
     // TODO : 국내 주식 코드를 받아서 정보를 조회해온다.
 
     // TODO : 해외 주식 코드를 받아서 정보를 조회해온다.
-    @GetMapping(path = "/Inter/GetInterStockInfo", produces = "text/plain;charset=UTF-8")
-    public InterStockResponse[] GetInterStockProfit(@RequestParam KakaoChatbotResponse kakaoChatbotResponse) throws Exception{
+    @PostMapping(path = "/Inter/GetInterStockInfo")
+    public InterStockResponse[] GetInterStockProfit(@RequestBody KakaoChatbotResponse kakaoChatbotResponse) throws Exception{
+
         InterStockResponse[] entity=interService.GetmaxProfit(kakaoChatbotResponse);
 
         return entity;
