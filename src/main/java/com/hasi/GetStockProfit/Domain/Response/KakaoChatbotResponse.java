@@ -34,7 +34,7 @@ public class KakaoChatbotResponse {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    class Intent {
+    public static class Intent {
         @JsonProperty(value = "id")
         String id;
         @JsonProperty(value = "name")
@@ -60,6 +60,11 @@ public class KakaoChatbotResponse {
         @JsonProperty(value = "user")
         User user;
 
+        @Data
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         class Params {
             @JsonProperty(value = "surface")
             String surface;
@@ -67,6 +72,11 @@ public class KakaoChatbotResponse {
             String ignoreMe;
         }
 
+        @Data
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         class Block {
             @JsonProperty(value = "id")
             String id;
@@ -74,6 +84,11 @@ public class KakaoChatbotResponse {
             String name;
         }
 
+        @Data
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         class User {
             @JsonProperty(value = "id")
             String id;
@@ -82,6 +97,11 @@ public class KakaoChatbotResponse {
             @JsonProperty(value = "properties")
             List<Properties> properties;
 
+            @Data
+            @AllArgsConstructor
+            @NoArgsConstructor
+            @JsonIgnoreProperties(ignoreUnknown = true)
+            @JsonInclude(JsonInclude.Include.NON_NULL)
             class Properties {
                 @JsonProperty(value = "plusfriendUserKey")
                 String plusfriendUserKey;
