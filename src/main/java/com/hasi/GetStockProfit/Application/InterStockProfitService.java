@@ -3,6 +3,7 @@ package com.hasi.GetStockProfit.Application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
+import com.hasi.GetStockProfit.Domain.Response.KakaoChatbotResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,19 @@ public class InterStockProfitService {
         this.httpEntity = new HttpEntity<>(headers);
     }
 
-    public InterStockResponse[] GetmaxProfit(String ticker) throws JsonProcessingException {
+    public InterStockResponse[] GetmaxProfit(KakaoChatbotResponse kakaoChatbotResponse) throws JsonProcessingException {
+        log.info("ticker: {}", kakaoChatbotResponse.getAction());
+        //Ticker를 통한 API 호출
+        String ticker=kakaoChatbotResponse.getTciker();
+        ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
+        InterStockResponse[] arr = entity.getBody();
+        //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
+
+        return arr;
+    }
+
+
+    public InterStockResponse[] TestGetmaxProfit(String ticker) throws JsonProcessingException {
         log.info("ticker: {}", ticker);
         //Ticker를 통한 API 호출
         ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
