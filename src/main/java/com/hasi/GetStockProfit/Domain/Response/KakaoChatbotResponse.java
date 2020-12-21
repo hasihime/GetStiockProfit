@@ -95,7 +95,7 @@ public class KakaoChatbotResponse {
             @JsonProperty(value = "type")
             String type;
             @JsonProperty(value = "properties")
-            List<Properties> properties;
+            Object properties;
 
             @Data
             @AllArgsConstructor
