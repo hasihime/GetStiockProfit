@@ -2,8 +2,10 @@ package com.hasi.GetStockProfit.Application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillResponse;
+import com.hasi.GetStockProfit.Domain.Response.Profit;
 import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
-import com.hasi.GetStockProfit.Domain.Response.KakaoChatbotResponse;
+import com.hasi.GetStockProfit.Domain.Request.KakaoSkillResponseRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class InterStockProfitService {
     private final HttpEntity<String> httpEntity;
 
     @Autowired
+    private  GetStockProfitService getStockProfitService;
+
+    @Autowired
     public InterStockProfitService(RestTemplateBuilder restTemplateBuilder) {
         // TODO:
         this.restTemplate = restTemplateBuilder.build();
@@ -35,15 +40,30 @@ public class InterStockProfitService {
         this.httpEntity = new HttpEntity<>(headers);
     }
 
-    public InterStockResponse[] GetmaxProfit(KakaoChatbotResponse kakaoChatbotResponse) throws JsonProcessingException {
+    public String GetmaxProfit(KakaoSkillResponseRequest kakaoChatbotResponse) throws JsonProcessingException {
+        log.info("input: {}", kakaoChatbotResponse);
         log.info("ticker: {}", kakaoChatbotResponse.getAction());
+        Profit profit=new Profit();
+
         //Ticker를 통한 API 호출
         String ticker=kakaoChatbotResponse.getTciker().get("ticker");
+        log.info("추출한 ticker  {}", ticker);
         ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
         InterStockResponse[] arr = entity.getBody();
         //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
+        KakaoSkillResponse kakaoSkillResponse=new KakaoSkillResponse();
+        if (arr != null) {
+           profit= getStockProfitService.getprofit(ticker,arr);
+           kakaoSkillResponse.makeData(profit);
+        } else {
+            //에러 발생
+        }
 
-        return arr;
+        ObjectMapper mapper = new ObjectMapper();
+        String response=mapper.writeValueAsString(kakaoSkillResponse);
+        log.info("response {}",response);
+        return response;
+
     }
 
 

@@ -1,4 +1,4 @@
-package com.hasi.GetStockProfit.Domain.Response;
+package com.hasi.GetStockProfit.Domain.Request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,7 +15,7 @@ import java.util.Map;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class KakaoChatbotResponse {
+public class KakaoSkillResponseRequest {
     @JsonProperty(value = "intent")
     Intent intent;
     @JsonProperty(value = "userRequest")
@@ -140,8 +140,7 @@ public class KakaoChatbotResponse {
         @JsonProperty(value = "id")
         String id;
         @JsonProperty(value = "detailParams")
-        Map<String, String> detailParams;
-
+        Map<String, Object> detailParams;
     }
 
     @Override

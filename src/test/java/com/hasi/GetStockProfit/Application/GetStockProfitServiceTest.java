@@ -1,6 +1,6 @@
 package com.hasi.GetStockProfit.Application;
 
-import com.hasi.GetStockProfit.Domain.Request.Profit;
+import com.hasi.GetStockProfit.Domain.Response.Profit;
 import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
