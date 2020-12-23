@@ -1,12 +1,10 @@
 package com.hasi.GetStockProfit.Application;
 
-import com.hasi.GetStockProfit.Domain.Request.Profit;
+import com.hasi.GetStockProfit.Domain.Response.Profit;
 import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Slf4j
 @Service

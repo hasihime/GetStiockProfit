@@ -1,10 +1,11 @@
-package com.hasi.GetStockProfit.Domain.Response;
+package com.hasi.GetStockProfit.Domain.Request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class KakaoChatbotResponse {
+public class KakaoSkillRequest {
     @JsonProperty(value = "intent")
     Intent intent;
     @JsonProperty(value = "userRequest")
@@ -25,8 +26,8 @@ public class KakaoChatbotResponse {
     @JsonProperty(value = "bot")
     Bot bot;
 
-    public Map<String, String> getTciker() {
-        return action.params;
+    public String getUtterance(){
+        return userRequest.getUtterance();
     }
 
     @Data
@@ -59,6 +60,7 @@ public class KakaoChatbotResponse {
         String lang;
         @JsonProperty(value = "user")
         User user;
+
 
         @Data
         @AllArgsConstructor
@@ -140,8 +142,7 @@ public class KakaoChatbotResponse {
         @JsonProperty(value = "id")
         String id;
         @JsonProperty(value = "detailParams")
-        Map<String, String> detailParams;
-
+        Map<String, Object> detailParams;
     }
 
     @Override
