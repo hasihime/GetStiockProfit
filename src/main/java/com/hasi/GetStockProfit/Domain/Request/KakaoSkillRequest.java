@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class KakaoSkillResponseRequest {
+public class KakaoSkillRequest {
     @JsonProperty(value = "intent")
     Intent intent;
     @JsonProperty(value = "userRequest")
@@ -25,8 +26,8 @@ public class KakaoSkillResponseRequest {
     @JsonProperty(value = "bot")
     Bot bot;
 
-    public Map<String, String> getTciker() {
-        return action.params;
+    public String getUtterance(){
+        return userRequest.getUtterance();
     }
 
     @Data
@@ -59,6 +60,7 @@ public class KakaoSkillResponseRequest {
         String lang;
         @JsonProperty(value = "user")
         User user;
+
 
         @Data
         @AllArgsConstructor

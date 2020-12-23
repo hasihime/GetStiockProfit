@@ -2,10 +2,13 @@ package com.hasi.GetStockProfit.Application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hasi.GetStockProfit.Domain.Response.KakaoSkillResponse;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.Component;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.KakaoSkillSimpleTextResponse;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.SimpleText;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.SkillTemplate;
 import com.hasi.GetStockProfit.Domain.Response.Profit;
 import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
-import com.hasi.GetStockProfit.Domain.Request.KakaoSkillResponseRequest;
+import com.hasi.GetStockProfit.Domain.Request.KakaoSkillRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,29 +43,41 @@ public class InterStockProfitService {
         this.httpEntity = new HttpEntity<>(headers);
     }
 
-    public String GetmaxProfit(KakaoSkillResponseRequest kakaoChatbotResponse) throws JsonProcessingException {
-        log.info("input: {}", kakaoChatbotResponse);
-        log.info("ticker: {}", kakaoChatbotResponse.getAction());
+    public String GetmaxProfit(KakaoSkillRequest kakaoSkillRequest) throws JsonProcessingException {
+        log.info("input: {}", kakaoSkillRequest);
+        log.info("ticker: {}", kakaoSkillRequest.getUtterance());
+
+
         Profit profit=new Profit();
 
         //Ticker를 통한 API 호출
-        String ticker=kakaoChatbotResponse.getTciker().get("ticker");
+        String ticker=kakaoSkillRequest.getUtterance();
         log.info("추출한 ticker  {}", ticker);
         ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
         InterStockResponse[] arr = entity.getBody();
         //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
-        KakaoSkillResponse kakaoSkillResponse=new KakaoSkillResponse();
+        //KakaoSkillResponse 생성
+        KakaoSkillSimpleTextResponse response=new KakaoSkillSimpleTextResponse();
+
         if (arr != null) {
+            // Profit 가져오는게 안됨.
            profit= getStockProfitService.getprofit(ticker,arr);
-           kakaoSkillResponse.makeData(profit);
+
+
+            response.setVersion("2.0");
+            SimpleText simpleText=new SimpleText(profit.toString());
+            Component outputs=new Component(simpleText);
+            SkillTemplate template=new SkillTemplate(new ArrayList<Component>());
+            template.getOutputs().add(outputs);
+            response.setTemplate(template);
         } else {
             //에러 발생
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        String response=mapper.writeValueAsString(kakaoSkillResponse);
-        log.info("response {}",response);
-        return response;
+        String returnJson=mapper.writeValueAsString(response);
+        log.info("response {}",returnJson);
+        return returnJson;
 
     }
 

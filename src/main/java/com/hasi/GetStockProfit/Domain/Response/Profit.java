@@ -21,6 +21,7 @@ public class Profit {
 		this.ticker = ticker;
 		this.etc = etc;
 	}
-	
+
+
 
 }
