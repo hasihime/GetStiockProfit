@@ -33,7 +33,7 @@ public class InterStockProfitService {
     private final HttpEntity<String> httpEntity;
 
     @Autowired
-    private  GetStockProfitService getStockProfitService;
+    private GetStockProfitService getStockProfitService;
 
     @Autowired
     public InterStockProfitService(RestTemplateBuilder restTemplateBuilder) {
@@ -48,35 +48,43 @@ public class InterStockProfitService {
         log.info("ticker: {}", kakaoSkillRequest.getUtterance());
 
 
-        Profit profit=new Profit();
+        Profit profit = new Profit();
 
         //Ticker를 통한 API 호출
-        String ticker=kakaoSkillRequest.getUtterance();
+        String ticker = kakaoSkillRequest.getUtterance();
         log.info("추출한 ticker  {}", ticker);
         ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
         InterStockResponse[] arr = entity.getBody();
         //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
         //KakaoSkillResponse 생성
-        KakaoSkillSimpleTextResponse response=new KakaoSkillSimpleTextResponse();
+        KakaoSkillSimpleTextResponse response = new KakaoSkillSimpleTextResponse();
 
         if (arr != null) {
-            // Profit 가져오는게 안됨.
-           profit= getStockProfitService.getprofit(ticker,arr);
-
-
+            profit = getStockProfitService.getprofit(ticker, arr);
             response.setVersion("2.0");
-            SimpleText simpleText=new SimpleText(profit.toString());
-            Component outputs=new Component(simpleText);
-            SkillTemplate template=new SkillTemplate(new ArrayList<Component>());
+            String text=profit.getTicker()+"는 "+profit.getLowdate()
+                    +"에 구매해서"
+                    +profit.getHighdate()+"에 판매하면"
+                    +profit.getMaxprofit()+"$의 이득을 볼 수 있습니다.";
+            SimpleText simpleText = new SimpleText(text);
+            Component outputs = new Component(simpleText);
+            SkillTemplate template = new SkillTemplate(new ArrayList<Component>());
             template.getOutputs().add(outputs);
             response.setTemplate(template);
         } else {
-            //에러 발생
+            //테스트 코드 에러 발생
+            profit = getStockProfitService.getprofit(ticker, arr);
+            response.setVersion("2.0");
+            SimpleText simpleText = new SimpleText("입력값이 정확하지 않습니다. 확인해주세요");
+            Component outputs = new Component(simpleText);
+            SkillTemplate template = new SkillTemplate(new ArrayList<Component>());
+            template.getOutputs().add(outputs);
+            response.setTemplate(template);
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        String returnJson=mapper.writeValueAsString(response);
-        log.info("response {}",returnJson);
+        String returnJson = mapper.writeValueAsString(response);
+        log.info("response {}", returnJson);
         return returnJson;
 
     }
