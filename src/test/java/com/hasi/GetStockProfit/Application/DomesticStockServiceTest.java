@@ -3,12 +3,11 @@ package com.hasi.GetStockProfit.Application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@AutoConfigureMockRestServiceServer
+
 @SpringBootTest
 class DomesticStockServiceTest {
 
