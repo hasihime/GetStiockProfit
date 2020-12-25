@@ -2,7 +2,13 @@ package com.hasi.GetStockProfit.Application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.Component;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.KakaoSkillSimpleTextResponse;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.SimpleText;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.SkillTemplate;
+import com.hasi.GetStockProfit.Domain.Response.Profit;
 import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
+import com.hasi.GetStockProfit.Domain.Request.KakaoSkillRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +33,9 @@ public class InterStockProfitService {
     private final HttpEntity<String> httpEntity;
 
     @Autowired
+    private GetStockProfitService getStockProfitService;
+
+    @Autowired
     public InterStockProfitService(RestTemplateBuilder restTemplateBuilder) {
         // TODO:
         this.restTemplate = restTemplateBuilder.build();
@@ -34,7 +43,54 @@ public class InterStockProfitService {
         this.httpEntity = new HttpEntity<>(headers);
     }
 
-    public InterStockResponse[] GetmaxProfit(String ticker) throws JsonProcessingException {
+    public String GetmaxProfit(KakaoSkillRequest kakaoSkillRequest) throws JsonProcessingException {
+        log.info("input: {}", kakaoSkillRequest);
+        log.info("ticker: {}", kakaoSkillRequest.getUtterance());
+
+
+        Profit profit = new Profit();
+
+        //Ticker를 통한 API 호출
+        String ticker = kakaoSkillRequest.getUtterance();
+        log.info("추출한 ticker  {}", ticker);
+        ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
+        InterStockResponse[] arr = entity.getBody();
+        //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
+        //KakaoSkillResponse 생성
+        KakaoSkillSimpleTextResponse response = new KakaoSkillSimpleTextResponse();
+
+        if (arr != null) {
+            profit = getStockProfitService.getprofit(ticker, arr);
+            response.setVersion("2.0");
+            String text=profit.getTicker()+"는 "+profit.getLowdate()
+                    +"에 구매해서"
+                    +profit.getHighdate()+"에 판매하면"
+                    +profit.getMaxprofit()+"$의 이득을 볼 수 있습니다.";
+            SimpleText simpleText = new SimpleText(text);
+            Component outputs = new Component(simpleText);
+            SkillTemplate template = new SkillTemplate(new ArrayList<Component>());
+            template.getOutputs().add(outputs);
+            response.setTemplate(template);
+        } else {
+            //테스트 코드 에러 발생
+            profit = getStockProfitService.getprofit(ticker, arr);
+            response.setVersion("2.0");
+            SimpleText simpleText = new SimpleText("입력값이 정확하지 않습니다. 확인해주세요");
+            Component outputs = new Component(simpleText);
+            SkillTemplate template = new SkillTemplate(new ArrayList<Component>());
+            template.getOutputs().add(outputs);
+            response.setTemplate(template);
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        String returnJson = mapper.writeValueAsString(response);
+        log.info("response {}", returnJson);
+        return returnJson;
+
+    }
+
+
+    public InterStockResponse[] TestGetmaxProfit(String ticker) throws JsonProcessingException {
         log.info("ticker: {}", ticker);
         //Ticker를 통한 API 호출
         ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
