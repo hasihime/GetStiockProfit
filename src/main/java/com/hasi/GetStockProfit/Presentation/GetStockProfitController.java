@@ -4,9 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hasi.GetStockProfit.Application.InterStockProfitService;
 import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
 import com.hasi.GetStockProfit.Domain.Request.KakaoSkillRequest;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.Component;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.KakaoSkillSimpleTextResponse;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.SimpleText;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.SkillTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @RestController
 public class GetStockProfitController {
@@ -23,6 +29,14 @@ public class GetStockProfitController {
     // TODO : 해외 주식 코드를 받아서 정보를 조회해온다.
     @PostMapping(path = "/Inter/GetInterStockInfo")
     public String GetInterStockProfit(@RequestBody KakaoSkillRequest kakaoSkillRequest) throws Exception{
+//        KakaoSkillSimpleTextResponse response=new KakaoSkillSimpleTextResponse();
+//        response.setVersion("2.0");
+//        SimpleText simpleText = new SimpleText("잠시만 기다려주세요.");
+//        Component outputs = new Component(simpleText);
+//        SkillTemplate template = new SkillTemplate(new ArrayList<Component>());
+//        template.getOutputs().add(outputs);
+//        response.setTemplate(template);
+
         return  interService.GetmaxProfit(kakaoSkillRequest);
     }
 
