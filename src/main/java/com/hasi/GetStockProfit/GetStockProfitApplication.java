@@ -28,7 +28,7 @@ public class GetStockProfitApplication {
 	}
 
 	private ApiInfo metadata() {
-		return new ApiInfoBuilder().title("GetStockProfitTEST").description("주식코드를 받아 기간내 최대 수익 계산").version("1.0").build();
+		return new ApiInfoBuilder().title("GetStockProfit").description("주식코드를 받아 기간내 최대 수익 계산").version("1.0").build();
 	}
 
 	public static void main(String[] args) {
