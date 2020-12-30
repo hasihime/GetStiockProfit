@@ -11,6 +11,8 @@ plugins {
     id 'org.springframework.boot' version '2.3.3.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
+	//ECR 이미지 배포를 위해 jib사용
+	id 'com.google.cloud.tools.jib' version '1.8.0'
 }
 
 group = 'com.hasi'
@@ -51,6 +53,23 @@ implementation('org.springframework.boot:spring-boot-starter-web')
 	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 }
+
+jib {
+	from {
+		image = "openjdk:8-alpine"
+	}
+	to {
+		image = "678513782451.dkr.ecr.ap-northeast-2.amazonaws.com/hasi_gsp_ecr"
+		tags = '0.0.1-SNAPSHOT'
+	}
+	container {
+		// Set JVM options.
+		jvmFlags = ['-Dspring.profiles.active=dev', '-XX:+UseContainerSupport', '-Dserver.port=8080', '-Dfile.encoding=UTF-8']
+		// Expose different port.
+		ports = ['8080']
+	}
+}
+
 test {
 	useJUnitPlatform()
 }
