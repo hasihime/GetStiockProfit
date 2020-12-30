@@ -76,5 +76,5 @@ jobs:
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         service: my-app-ecs-service
-        cluster: default
+        cluster: my-app-cluster
         wait-for-service-stability: true
