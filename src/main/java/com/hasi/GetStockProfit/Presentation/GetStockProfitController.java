@@ -55,8 +55,4 @@ public class GetStockProfitController {
         return  "hello";
     }
 
-    @GetMapping(path = "/test/test1", produces = "text/plain;charset=UTF-8")
-    public String Test1() throws Exception{
-        return  "hello1";
-    }
 }
