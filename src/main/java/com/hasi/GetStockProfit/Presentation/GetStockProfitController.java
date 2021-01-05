@@ -50,9 +50,9 @@ public class GetStockProfitController {
         return  mapper.writeValueAsString(list);
     }
 
-//    @GetMapping(path = "/test/test", produces = "text/plain;charset=UTF-8")
-//    public String Test() throws Exception{
-//        return  "hello";
-//    }
+    @GetMapping(path = "/test/test", produces = "text/plain;charset=UTF-8")
+    public String Test() throws Exception{
+        return  "hello";
+    }
 
 }
