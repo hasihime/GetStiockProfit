@@ -1,6 +1,7 @@
 package com.hasi.GetStockProfit.Presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hasi.GetStockProfit.Application.GetStockProfitService;
 import com.hasi.GetStockProfit.Application.InterStockProfitService;
 import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
 import com.hasi.GetStockProfit.Domain.Request.KakaoSkillRequest;
@@ -19,25 +20,16 @@ public class GetStockProfitController {
 
     @Autowired
     private InterStockProfitService interService;
-
-
-    // TODO : 카카오톡 채널봇에서 국내주식인지 해외주식인지 받아서 들어온 요청에 따라 분기 제공
+    @Autowired
+    private GetStockProfitService GSPService;
 
 
     // TODO : 국내 주식 코드를 받아서 정보를 조회해온다.
 
     // TODO : 해외 주식 코드를 받아서 정보를 조회해온다.
-    @PostMapping(path = "/Inter/GetInterStockInfo")
-    public String GetInterStockProfit(@RequestBody KakaoSkillRequest kakaoSkillRequest) throws Exception{
-//        KakaoSkillSimpleTextResponse response=new KakaoSkillSimpleTextResponse();
-//        response.setVersion("2.0");
-//        SimpleText simpleText = new SimpleText("잠시만 기다려주세요.");
-//        Component outputs = new Component(simpleText);
-//        SkillTemplate template = new SkillTemplate(new ArrayList<Component>());
-//        template.getOutputs().add(outputs);
-//        response.setTemplate(template);
-
-        return  interService.GetmaxProfit(kakaoSkillRequest);
+    @PostMapping(path = "/Inter/MakeInterStockProfit")
+    public String MakeInterStockProfit(@RequestBody KakaoSkillRequest kakaoSkillRequest) throws Exception{
+        return  GSPService.InterStockService(kakaoSkillRequest);
     }
 
     // TODO : TEST 컨트롤러- 결과를 JSON으로 출력해준다.

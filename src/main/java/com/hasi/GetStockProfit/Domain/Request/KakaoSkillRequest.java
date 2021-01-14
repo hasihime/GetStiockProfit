@@ -3,10 +3,7 @@ package com.hasi.GetStockProfit.Domain.Request;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +26,15 @@ public class KakaoSkillRequest {
     public String getUtterance(){
         return userRequest.getUtterance();
     }
+    public void makeUserRequest(){
+        this.userRequest=new UserRequest();
+    }
+
+    public void makeUtterance(String utterance){
+        this.userRequest.utterance=utterance;
+    }
+
+
 
     @Data
     @AllArgsConstructor
