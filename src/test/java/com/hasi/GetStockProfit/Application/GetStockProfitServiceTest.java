@@ -1,119 +1,79 @@
 package com.hasi.GetStockProfit.Application;
 
-import com.hasi.GetStockProfit.Domain.Response.Profit;
-import com.hasi.GetStockProfit.Domain.Response.InterStockResponse;
-import org.junit.jupiter.api.BeforeAll;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hasi.GetStockProfit.Domain.Request.KakaoSkillRequest;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.Component;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.KakaoSkillSimpleTextResponse;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.SimpleText;
+import com.hasi.GetStockProfit.Domain.Response.KakaoSkillSimpleText.SkillTemplate;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureMockRestServiceServer;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+
 
 @SpringBootTest
 class GetStockProfitServiceTest {
 
-    private static InterStockResponse[] testDataarr;
-
     @Autowired
     private GetStockProfitService getStockProfitService;
 
-    @BeforeAll
-    static void setting() {
-        testDataarr = new InterStockResponse[10];
-        testDataarr[0] = new InterStockResponse("2020-09-01", 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        testDataarr[1] = new InterStockResponse("2020-09-02", 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        testDataarr[2] = new InterStockResponse("2020-09-03", 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        testDataarr[3] = new InterStockResponse("2020-09-04", 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        testDataarr[4] = new InterStockResponse("2020-09-05", 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        testDataarr[5] = new InterStockResponse("2020-09-06", 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        testDataarr[6] = new InterStockResponse("2020-09-07", 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        testDataarr[7] = new InterStockResponse("2020-09-08", 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        testDataarr[8] = new InterStockResponse("2020-09-09", 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        testDataarr[9] = new InterStockResponse("2020-09-10", 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+    @Test
+    @DisplayName("kakaoSkill 입력값이 옳은 경우")
+    public void CorrectSkill() {
+        KakaoSkillRequest skillRequest = new KakaoSkillRequest();
+        skillRequest.makeUserRequest();
+        skillRequest.makeUtterance("correct input");
+
+        //when
+        boolean actual = getStockProfitService.CheckSkillRequest(skillRequest);
+
+        //then
+        Assertions.assertTrue(actual);
+        Assertions.assertEquals(skillRequest.getUtterance(), "correct input");
     }
 
     @Test
-    @DisplayName("연속 상승경우")
-    public void alwaysUpword() {
-        InterStockResponse[] test = new InterStockResponse[3];
-        for (int i = 0; i < test.length; i++) {
-            test[i] = testDataarr[i];
-        }
-        Profit result = getStockProfitService.getprofit("testticker",test);
-        assertEquals(2f, result.getMaxprofit());
-        assertEquals("2020-09-01", result.getLowdate());
-        assertEquals("2020-09-03", result.getHighdate());
+    @DisplayName("kakaoSkill 입력값이 없는 경우")
+    public void NullSkill() {
+        KakaoSkillRequest skillRequest = new KakaoSkillRequest();
+        skillRequest.makeUserRequest();
+
+        //when
+        boolean actual = getStockProfitService.CheckSkillRequest(skillRequest);
+
+        //then
+        Assertions.assertFalse(actual);
+        Assertions.assertNull(skillRequest.getUtterance());
     }
 
     @Test
-    @DisplayName("연속 하강경우")
-    public void alwaysDownword() {
-        InterStockResponse[] test = new InterStockResponse[3];
-        for (int i = 0; i < test.length; i++) {
-            test[i] = testDataarr[i + 3];
-        }
-        Profit result = getStockProfitService.getprofit("testticker",test);
-        assertEquals(0f, result.getMaxprofit());
-        assertEquals("2020-09-06", result.getLowdate());
-        assertEquals("2020-09-04", result.getHighdate());
+    @DisplayName("kakaoSkill Response 전송")
+    public void SendSkillResponse() throws JsonProcessingException {
+        KakaoSkillSimpleTextResponse expected = new KakaoSkillSimpleTextResponse();
+        SimpleText ExpectedSimpleText = new SimpleText("Expected");
+        expected.setVersion("2.0");
+        Component outputs = new Component(ExpectedSimpleText);
+        SkillTemplate template = new SkillTemplate(new ArrayList<Component>());
+        template.getOutputs().add(outputs);
+        expected.setTemplate(template);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String expectedJson = mapper.writeValueAsString(expected);
+
+        //when
+        KakaoSkillSimpleTextResponse skillResponse = new KakaoSkillSimpleTextResponse();
+        SimpleText simpleText = new SimpleText("Expected");
+
+        String actualJson = getStockProfitService.MakeKakaoResponse(skillResponse, simpleText);
+
+        //then
+        Assertions.assertEquals(expectedJson, actualJson);
     }
 
-    @Test
-    @DisplayName("변화가 없는경우")
-    public void AlwaysEquals() {
-        InterStockResponse[] test = new InterStockResponse[3];
-        for (int i = 0; i < test.length; i++) {
-            test[i] = testDataarr[i + 7];
-        }
-        Profit result = getStockProfitService.getprofit("testticker",test);
-        assertEquals(0f, result.getMaxprofit());
-        assertEquals("2020-09-08", result.getLowdate());
-        assertEquals("2020-09-08", result.getHighdate());
-    }
-
-    @Test
-    @DisplayName("최저가가 갱신되었지만 그 뒤에 최대 이익이 나지 않은 경우")
-    public void renewmin() {
-        InterStockResponse[] test = new InterStockResponse[6];
-
-        String mostLowDate = testDataarr[0].getDate();
-        float MostLowValue = testDataarr[0].getClose();
-        for (int i = 0; i < test.length; i++) {
-            test[i] = testDataarr[i];
-            if (MostLowValue > test[i].getClose()) {
-                MostLowValue = test[i].getClose();
-                mostLowDate = test[i].getDate();
-            }
-        }
-        Profit result = getStockProfitService.getprofit("testticker",test);
-        assertEquals("2020-09-06", mostLowDate);
-        assertEquals(2f, result.getMaxprofit());
-        assertEquals("2020-09-01", result.getLowdate());
-        assertEquals("2020-09-03", result.getHighdate());
-    }
-
-    @Test
-    @DisplayName("최저가와 최고가가 갱신된 경우")
-    public void renewMinandMax() {
-        InterStockResponse[] test = new InterStockResponse[8];
-        for (int i = 0; i < test.length; i++) {
-            test[i] = testDataarr[i];
-        }
-        Profit result = getStockProfitService.getprofit("testticker",test);
-        assertEquals(8f, result.getMaxprofit());
-        assertEquals("2020-09-06", result.getLowdate());
-        assertEquals("2020-09-08", result.getHighdate());
-    }
-
-
-    @Test
-    @DisplayName("전체")
-    public void allarr() {
-        Profit result = getStockProfitService.getprofit("testticker",testDataarr);
-        assertEquals(8f, result.getMaxprofit());
-        assertEquals("2020-09-06", result.getLowdate());
-        assertEquals("2020-09-08", result.getHighdate());
-    }
 }

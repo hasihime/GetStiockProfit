@@ -33,9 +33,6 @@ public class InterStockProfitService {
     private final HttpEntity<String> httpEntity;
 
     @Autowired
-    private GetStockProfitService getStockProfitService;
-
-    @Autowired
     public InterStockProfitService(RestTemplateBuilder restTemplateBuilder) {
         // TODO:
         this.restTemplate = restTemplateBuilder.build();
@@ -43,70 +40,14 @@ public class InterStockProfitService {
         this.httpEntity = new HttpEntity<>(headers);
     }
 
-    public String GetmaxProfit(KakaoSkillRequest kakaoSkillRequest) throws JsonProcessingException {
-        log.info("input: {}", kakaoSkillRequest);
-        log.info("ticker: {}", kakaoSkillRequest.getUtterance());
-
-
-        Profit profit = new Profit();
-
-        //Ticker를 통한 API 호출
-        String ticker = kakaoSkillRequest.getUtterance();
-        log.info("추출한 ticker  {}", ticker);
-        ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
-        InterStockResponse[] arr = entity.getBody();
-        //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
-        //KakaoSkillResponse 생성
-        KakaoSkillSimpleTextResponse response = new KakaoSkillSimpleTextResponse();
-
-        if (arr != null) {
-            profit = getStockProfitService.getprofit(ticker, arr);
-            response.setVersion("2.0");
-            String text=profit.getTicker()+"는 "+profit.getLowdate()
-                    +"에 구매해서"
-                    +profit.getHighdate()+"에 판매하면"
-                    +profit.getMaxprofit()+"$의 이득을 볼 수 있습니다.";
-            SimpleText simpleText = new SimpleText(text);
-            Component outputs = new Component(simpleText);
-            SkillTemplate template = new SkillTemplate(new ArrayList<Component>());
-            template.getOutputs().add(outputs);
-            response.setTemplate(template);
-        } else {
-            //테스트 코드 에러 발생
-            profit = getStockProfitService.getprofit(ticker, arr);
-            response.setVersion("2.0");
-            SimpleText simpleText = new SimpleText("입력값이 정확하지 않습니다. 확인해주세요");
-            Component outputs = new Component(simpleText);
-            SkillTemplate template = new SkillTemplate(new ArrayList<Component>());
-            template.getOutputs().add(outputs);
-            response.setTemplate(template);
-        }
-
-        ObjectMapper mapper = new ObjectMapper();
-        String returnJson = mapper.writeValueAsString(response);
-        log.info("response {}", returnJson);
-        return returnJson;
-
-    }
-
-
-    public InterStockResponse[] TestGetmaxProfit(String ticker) throws JsonProcessingException {
-        log.info("ticker: {}", ticker);
-        //Ticker를 통한 API 호출
-        ResponseEntity<InterStockResponse[]> entity = GetInterStockInfoEntity(ticker);
-        InterStockResponse[] arr = entity.getBody();
-        //정상적으로데이터를 가져왔다면 이익 계산 메소드 실행
-
-        return arr;
-    }
 
     public ResponseEntity<InterStockResponse[]> GetInterStockInfoEntity(String curTicker) {
         Date date = new Date();
-        Calendar before180 = Calendar.getInstance();
-        before180.add(Calendar.DATE, -180);
+        Calendar beforeYear = Calendar.getInstance();
+        beforeYear.add(Calendar.DATE, -365);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String enddate = format.format(date);
-        String startdate = format.format(before180.getTime());
+        String startdate = format.format(beforeYear.getTime());
         String token = "de6162a413844946ee8c3535879d862ad97187fe";
         String url = String.format("https://api.tiingo.com/tiingo/daily/%s/prices?startDate=%s&endDate=%s&token=%s",
                 curTicker, startdate, enddate, token);
