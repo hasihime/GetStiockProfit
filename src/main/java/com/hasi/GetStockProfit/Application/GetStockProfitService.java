@@ -41,7 +41,6 @@ public class GetStockProfitService {
 
             // TODO: 2.InterService에서 주식 히스토리 가져옴
             ResponseEntity<InterStockResponse[]> entity = interStockProfitService.GetInterStockInfoEntity(ticker);
-            log.info("Tiingo Response {}", entity.getBody());
 
             if (entity.getBody() != null) {
                 InterStockResponse[] arr = entity.getBody();
